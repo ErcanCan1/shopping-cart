@@ -13,15 +13,43 @@ function App() {
   const [products, setProducts] = useState(data);
   const [cart, setCart] = useState([]);
 
+  //localstorage
+  function cartLocalStorageYaz(cartParam) {
+    localStorage.setItem("cart", JSON.stringify(cartParam));
+  }
+
+  function cartLocalStorageOku(key){
+   return JSON.parse(localStorage.getItem(key));
+  }
+
+  function initialStateOku(key){
+    const initialCart = cartLocalStorageOku(key);
+    if(initialCart) {
+      return initialCart;
+    }else {
+      return [];
+    }
+  }
+
   const addItem = (item) => {
     // verilen itemi sepete ekleyelim
     setCart([...cart, item]);
+    cartLocalStorageYaz(cart);
   };
+
+  const removeItem = (id) => {
+    // verilen itemi sepetetemn çıkartma
+    const newCart = ([...cart.filter((c) => c.id !== id)]);
+    setCart(newCart);
+    cartLocalStorageYaz(newCart);
+  };
+
+
 
   return (
     <div className="App">
       <ProductContext.Provider value= {{ products, addItem }}>
-      <CartContext.Provider value = {{ cart }}>
+      <CartContext.Provider value = {{ cart, removeItem }}>
       <Navigation />
 
       {/* Routelar */}
